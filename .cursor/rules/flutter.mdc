@@ -1,0 +1,27 @@
+---
+description: Flutter/Dart conventions for meal_app
+globs: ["**/*.dart", "pubspec.yaml"]
+alwaysApply: false
+---
+
+# meal_app – Flutter conventions
+
+## Code style (enforced by analysis_options.yaml)
+- Single quotes, trailing commas, `const` constructors/declarations wherever possible.
+- No `print`; no unawaited futures; explicit return types; `final` locals.
+- Strict analyzer (strict-casts/inference/raw-types): never use implicit `dynamic`.
+- Keep imports ordered; prefer `package:` imports over relative imports outside the same folder.
+
+## Structure
+- Feature-first layout under `lib/`: `lib/features/<feature>/{data,domain,presentation}`, shared code in `lib/core/`.
+- Prefer small widget classes over helper methods that return widgets.
+- Use `Theme.of(context)` / `ColorScheme` — no hardcoded colors or text styles in widgets.
+- Don't call `BuildContext` after an `await` without a `mounted` check.
+- State management: not chosen yet — ask before introducing one.
+
+## Workflow
+- After changes run `dart format .`, `flutter analyze --fatal-infos`, and `flutter test`; fix everything before finishing.
+- Add or update widget/unit tests alongside new behavior (tests mirror `lib/` under `test/`).
+- Never edit generated files (`*.g.dart`, `*.freezed.dart`) or `pubspec.lock` by hand.
+- Add dependencies with `flutter pub add`; the Flutter version is pinned in pubspec.yaml — don't bump it casually.
+- CI only runs format/analyze/test; app build/release automation is intentionally deferred.
