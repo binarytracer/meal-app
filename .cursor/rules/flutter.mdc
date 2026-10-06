@@ -13,6 +13,7 @@ alwaysApply: false
 - Keep imports ordered; prefer `package:` imports over relative imports outside the same folder.
 
 ## Structure
+- Flutter 3.47+: import `package:material_ui/material_ui.dart` (and `cupertino_ui`), never `package:flutter/material.dart`.
 - Feature-first layout under `lib/`: `lib/features/<feature>/{data,domain,presentation}`, shared code in `lib/core/`.
 - Prefer small widget classes over helper methods that return widgets.
 - Use `Theme.of(context)` / `ColorScheme` — no hardcoded colors or text styles in widgets.

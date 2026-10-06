@@ -7,15 +7,16 @@ A Flutter application for meal planning and management.
 A multi-screen app that lets users navigate between screens using screen
 stacks, tab bars and a side drawer.
 
-> **Status:** early development. The project scaffold, tooling and CI are in
-> place; the screens below are the planned structure.
+> **Status:** early development. The scaffold, dark Material 3 theme with Lato
+> typography, tooling and CI are in place; the screens below are planned.
 
 ## Features
 
 - **Screen stacks:** push and pop screens with the Navigator
 - **Tab bars:** switch between related views within a screen
 - **Side drawer:** jump between top-level screens from anywhere
-- **Google Fonts:** custom typography via the `google_fonts` package (not yet installed)
+- **Google Fonts:** Lato typography via the `google_fonts` package
+- **Material 3 dark theme** generated from a seed color
 - Meal planning and management (planned)
 
 ## Planned screens
@@ -33,8 +34,11 @@ screen, and detail screens are pushed on top of the stack with the Navigator.
 ## Tech stack
 
 - [Flutter](https://flutter.dev) 3.47.6 (pinned in `pubspec.yaml`) / Dart 3.13
-- Material design with `Theme` / `ColorScheme`-based styling
-- [`google_fonts`](https://pub.dev/packages/google_fonts) for typography (planned)
+- Material 3 via [`material_ui`](https://pub.dev/packages/material_ui) (Flutter 3.47
+  moved Material out of the framework, so import
+  `package:material_ui/material_ui.dart`, not `package:flutter/material.dart`)
+- [`google_fonts`](https://pub.dev/packages/google_fonts) 9 for typography
+- [`cupertino_icons`](https://pub.dev/packages/cupertino_icons) 2
 - GitHub Actions for CI, Dependabot for dependency updates
 
 ## Getting started
@@ -64,7 +68,7 @@ The analyzer runs in strict mode (`strict-casts`, `strict-inference`,
 
 ## Project structure
 
-Feature-first layout under `lib/`:
+Planned feature-first layout under `lib/` (currently only `main.dart` exists):
 
 ```
 lib/
@@ -76,7 +80,7 @@ lib/
 
 - [ ] App shell: side drawer and screen stack navigation
 - [ ] Tab bar views
-- [ ] Add `google_fonts` and apply a custom text theme
+- [x] Add `google_fonts` and apply a custom text theme
 - [ ] Meal list and detail screens
 - [ ] Weekly planner
 - [ ] Choose state management and persistence
