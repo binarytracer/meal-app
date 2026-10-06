@@ -4,16 +4,18 @@ A Flutter application for meal planning and management.
 
 ## Overview
 
-A multi-screen app with navigation between screens and a navigation drawer
-for moving around the app.
+A multi-screen app that lets users navigate between screens using screen
+stacks, tab bars and a side drawer.
 
 > **Status:** early development. The project scaffold, tooling and CI are in
 > place; the screens below are the planned structure.
 
 ## Features
 
-- Multi-screen navigation (Navigator routes)
-- Navigation drawer for switching between top-level screens
+- **Screen stacks:** push and pop screens with the Navigator
+- **Tab bars:** switch between related views within a screen
+- **Side drawer:** jump between top-level screens from anywhere
+- **Google Fonts:** custom typography via the `google_fonts` package (not yet installed)
 - Meal planning and management (planned)
 
 ## Planned screens
@@ -25,13 +27,14 @@ for moving around the app.
 | Planner | Plan meals across the week |
 | Settings | App preferences |
 
-The drawer links to each top-level screen; detail screens are pushed on top
-with the Navigator.
+The drawer links to each top-level screen, tab bars switch views within a
+screen, and detail screens are pushed on top of the stack with the Navigator.
 
 ## Tech stack
 
-- [Flutter](https://flutter.dev) 3.41.7 (pinned in `pubspec.yaml`) / Dart 3.11
+- [Flutter](https://flutter.dev) 3.47.6 (pinned in `pubspec.yaml`) / Dart 3.13
 - Material design with `Theme` / `ColorScheme`-based styling
+- [`google_fonts`](https://pub.dev/packages/google_fonts) for typography (planned)
 - GitHub Actions for CI, Dependabot for dependency updates
 
 ## Getting started
@@ -71,7 +74,9 @@ lib/
 
 ## Roadmap
 
-- [ ] App shell: drawer and screen routing
+- [ ] App shell: side drawer and screen stack navigation
+- [ ] Tab bar views
+- [ ] Add `google_fonts` and apply a custom text theme
 - [ ] Meal list and detail screens
 - [ ] Weekly planner
 - [ ] Choose state management and persistence
