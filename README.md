@@ -8,7 +8,15 @@ A multi-screen app that lets users navigate between screens using screen
 stacks, tab bars and a side drawer.
 
 > **Status:** early development. The scaffold, dark Material 3 theme with Lato
-> typography, tooling and CI are in place; the screens below are planned.
+> typography, tooling and CI are in place; the Categories screen is built; other screens below are planned.
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/categories.png" alt="Categories screen with a two-column grid of colored gradient category tiles" width="300">
+</p>
+
+*Categories screen: a grid of gradient tiles on the dark Material 3 theme.*
 
 ## Features
 

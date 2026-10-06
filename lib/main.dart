@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:meal_app/core/theme/app_theme.dart';
+import 'package:meal_app/screens/categories_screen.dart';
 
 void main() {
   runApp(const App());
@@ -10,9 +11,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: appTheme,
-      home: const Scaffold(body: Center(child: Text('Meal App'))),
-    );
+    return MaterialApp(theme: appTheme, home: const CategoriesScreen());
   }
 }
