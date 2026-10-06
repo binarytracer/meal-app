@@ -68,7 +68,7 @@ The analyzer runs in strict mode (`strict-casts`, `strict-inference`,
 
 ## Project structure
 
-Planned feature-first layout under `lib/` (currently only `main.dart` exists):
+Planned feature-first layout under `lib/` (currently `main.dart` and `core/theme/app_theme.dart`):
 
 ```
 lib/
