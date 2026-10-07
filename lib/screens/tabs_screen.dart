@@ -1,7 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:meal_app/models/meal.dart';
 import 'package:meal_app/screens/categories_screen.dart';
+import 'package:meal_app/screens/filters_screen.dart';
 import 'package:meal_app/screens/meals_screen.dart';
+import 'package:meal_app/widgets/main_drawer.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -39,6 +41,16 @@ class _TabsScreenState extends State<TabsScreen> {
     setState(() => selectedIndex = index);
   }
 
+  void _selectDrawerScreen(String identifier) {
+    Navigator.of(context).pop();
+
+    if (identifier == 'filters') {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (ctx) => const FiltersScreen()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isFavoritesTab = selectedIndex == 1;
@@ -53,6 +65,7 @@ class _TabsScreenState extends State<TabsScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(activePageTitle)),
       body: activePage,
+      drawer: MainDrawer(onSelectScreen: _selectDrawerScreen),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) => _selectScreen(index),
         currentIndex: selectedIndex,
