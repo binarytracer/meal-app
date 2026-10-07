@@ -99,3 +99,14 @@ lib/
 
 The repo includes Cursor/VS Code settings (`.vscode/`) and AI project rules
 (`.cursor/rules/`) tuned for Flutter.
+
+### Recommended editor extensions
+
+Listed in `.vscode/extensions.json`, so VS Code/Cursor will offer to install
+them when you open the project:
+
+| Extension | ID | Purpose |
+| --- | --- | --- |
+| Dart | `Dart-Code.dart-code` | Dart language support, analysis, formatting |
+| Flutter | `Dart-Code.flutter` | Flutter tooling: run/debug, hot reload, widget inspector |
+| Error Lens | `usernamehw.errorlens` | Shows analyzer errors and warnings inline on the line |

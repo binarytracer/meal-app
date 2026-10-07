@@ -31,6 +31,13 @@ jobs:
       - name: Check formatting
         run: dart format --output=none --set-exit-if-changed .
 
+      - name: Forbid legacy Material/Cupertino imports
+        run: |
+          if grep -rnE "package:flutter/(material|cupertino)\.dart" lib test; then
+            echo "Use package:material_ui/material_ui.dart (or cupertino_ui) instead."
+            exit 1
+          fi
+
       - name: Analyze
         run: flutter analyze --fatal-infos
 
