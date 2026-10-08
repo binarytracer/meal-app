@@ -78,14 +78,20 @@ The app uses [Riverpod](https://riverpod.dev) as its app-wide state solution.
 | `mealsProvider` | `Provider<List<Meal>>` | The read-only list of all meals |
 | `favoritesProvider` | `StateNotifierProvider<FavoritesNotifier, List<Meal>>` | The favorite meals and the logic to toggle them |
 | `filtersProvider` | `StateNotifierProvider<FiltersNotifier, Map<Filter, bool>>` | Which dietary filters are switched on (gluten-free, lactose-free, vegetarian, vegan) |
+| `filteredMealsProvider` | `Provider<List<Meal>>` | The meals that pass the active filters. Derived from `mealsProvider` and `filtersProvider` |
+
+Providers can be built from other providers: `filteredMealsProvider` watches
+`mealsProvider` and `filtersProvider`, so it recomputes automatically whenever a
+filter is toggled and every widget watching it rebuilds. The filtering logic
+lives in one place and can be unit tested without any UI.
 
 ### Where each provider is used
 
 | Screen / widget | Provider | How |
 | --- | --- | --- |
-| `TabsScreen` | `mealsProvider`, `filtersProvider` | Watches both to work out which meals pass the active filters |
+| `TabsScreen` | `filteredMealsProvider`, `favoritesProvider` | Categories tab shows the filtered meals; Favorites tab shows the favorites |
 | `FiltersScreen` | `filtersProvider` | Watches the map for the switch values; calls `setFilter` when a switch is toggled |
-| `MealDetail` | `favoritesProvider` | Calls `toggleMealFavoriteStatus` from the star button and shows a snackbar from the result |
+| `MealDetail` | `favoritesProvider` | Watches it to fill or outline the star; calls `toggleMealFavoriteStatus` from the star button and shows a snackbar from the result |
 
 Because the state lives in providers and not in widgets, a change made on one
 screen (for example switching on a filter) is reflected on every other screen
@@ -122,6 +128,8 @@ Conventions:
 
 - Read state in widgets with `ref.watch(provider)`; call actions with
   `ref.read(provider.notifier).method()`.
+- Inside a provider, use `ref.watch` (not `ref.read`) to depend on another
+  provider so the result stays up to date.
 - Never mutate `state` in place. Assign a new object (`state = [...state, meal]`)
   so listeners rebuild.
 - Screens that use providers extend `ConsumerWidget` / `ConsumerStatefulWidget`.
@@ -150,8 +158,16 @@ locally before pushing:
 ```sh
 dart format --output=none --set-exit-if-changed .
 flutter analyze --fatal-infos
-flutter test
+flutter test --coverage
 ```
+
+Tests live in `test/`: unit tests for the providers (`test/providers/`) and
+widget tests for the screens (`test/widget_test.dart`). Provider logic is tested
+with a `ProviderContainer`; widgets are wrapped in a `ProviderScope`.
+
+CI also reads `coverage/lcov.info`, prints the line coverage in the run summary
+and fails if it drops below `MIN_COVERAGE` in `.github/workflows/ci.yml`.
+Raise that number as tests are added so coverage can only go up.
 
 The analyzer runs in strict mode (`strict-casts`, `strict-inference`,
 `strict-raw-types`) with extra lint rules; see `analysis_options.yaml`.
@@ -168,6 +184,10 @@ lib/
 ├── providers/     # Riverpod providers (meals, favorites, filters)
 ├── screens/       # tabs (bottom navigation), categories, meals, filters
 └── widgets/       # drawer, category tile, meal item, meal detail, image fallback
+
+test/
+├── providers/     # unit tests for the Riverpod providers
+└── widget_test.dart
 ```
 
 ## Roadmap
@@ -183,6 +203,7 @@ lib/
 - [x] Choose state management (Riverpod)
 - [x] Move favorites and filters onto Riverpod providers
 - [ ] Persistence
+- [x] Unit tests for the providers and test coverage report in CI
 - [ ] Widget tests for each screen
 - [ ] Automated Android build and release in CI
 
