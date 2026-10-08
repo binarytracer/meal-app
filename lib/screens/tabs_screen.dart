@@ -1,41 +1,20 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:meal_app/models/meal.dart';
+import 'package:meal_app/providers/filters_provider.dart';
 import 'package:meal_app/screens/categories_screen.dart';
 import 'package:meal_app/screens/filters_screen.dart';
 import 'package:meal_app/screens/meals_screen.dart';
 import 'package:meal_app/widgets/main_drawer.dart';
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() => _TabsScreenState();
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   var selectedIndex = 0;
-  var favoriteMeals = <Meal>[];
-
-  void _toggleMealFavoriteStatus(Meal meal) {
-    setState(() {
-      final isExisting = favoriteMeals.contains(meal);
-
-      if (isExisting) {
-        favoriteMeals.remove(meal);
-        _showFavoriteMessage('Removed from favorites');
-      } else {
-        favoriteMeals.add(meal);
-        _showFavoriteMessage('Added to favorites');
-      }
-    });
-  }
-
-  void _showFavoriteMessage(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
 
   void _selectScreen(int index) {
     setState(() => selectedIndex = index);
@@ -54,12 +33,13 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     final isFavoritesTab = selectedIndex == 1;
+
+    final filteredMeals = ref.watch(filteredMealsProvider);
+
     final Widget activePage = isFavoritesTab
-        ? MealsScreen(
-            meals: favoriteMeals,
-            onToggleFavorite: _toggleMealFavoriteStatus,
-          )
-        : CategoriesScreen(onToggleFavorite: _toggleMealFavoriteStatus);
+        ? MealsScreen(meals: filteredMeals)
+        : CategoriesScreen(meals: filteredMeals);
+
     final activePageTitle = isFavoritesTab ? 'Favorites' : 'Categories';
 
     return Scaffold(

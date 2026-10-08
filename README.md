@@ -165,8 +165,8 @@ lib/
 ├── core/theme/    # app theme
 ├── data/          # dummy categories and meals
 ├── models/        # Category, Meal
-├── providers/     # Riverpod providers (meals, favorites)
-├── screens/       # tabs (bottom navigation), categories, meals
+├── providers/     # Riverpod providers (meals, favorites, filters)
+├── screens/       # tabs (bottom navigation), categories, meals, filters
 └── widgets/       # drawer, category tile, meal item, meal detail, image fallback
 ```
 
