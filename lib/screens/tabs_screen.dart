@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:meal_app/providers/favorites_provider.dart';
 import 'package:meal_app/providers/filters_provider.dart';
 import 'package:meal_app/screens/categories_screen.dart';
 import 'package:meal_app/screens/filters_screen.dart';
@@ -34,11 +35,9 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   Widget build(BuildContext context) {
     final isFavoritesTab = selectedIndex == 1;
 
-    final filteredMeals = ref.watch(filteredMealsProvider);
-
     final Widget activePage = isFavoritesTab
-        ? MealsScreen(meals: filteredMeals)
-        : CategoriesScreen(meals: filteredMeals);
+        ? MealsScreen(meals: ref.watch(favoritesProvider))
+        : CategoriesScreen(meals: ref.watch(filteredMealsProvider));
 
     final activePageTitle = isFavoritesTab ? 'Favorites' : 'Categories';
 
