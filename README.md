@@ -18,11 +18,12 @@ stacks, tab bars and a side drawer.
   <img src="docs/screenshots/categories.png" alt="Categories screen with a two-column grid of colored gradient category tiles" width="240">
   <img src="docs/screenshots/tabs.png" alt="Categories tab with a side drawer button and a bottom bar to switch between Categories and Favorites" width="240">
   <img src="docs/screenshots/drawer.png" alt="Side drawer with Categories and Filters entries" width="240">
+  <img src="docs/screenshots/filters.png" alt="Your Filters screen with switches for gluten-free, lactose-free, vegan and vegetarian meals" width="240">
 </p>
 
 *Left to right: the Categories grid on the dark Material 3 theme, the same
-screen inside the tab bar (Categories / Favorites) with the drawer button, and
-the side drawer.*
+screen inside the tab bar (Categories / Favorites) with the drawer button, the
+side drawer, and the Filters screen.*
 
 ## Features
 
@@ -33,6 +34,9 @@ the side drawer.*
 - **Favorites:** star a meal on its detail screen to add or remove it; the
   Favorites tab updates immediately
 - **Image fallback:** a placeholder icon is shown if a meal photo fails to load
+- **App-wide state management:** [Riverpod](https://riverpod.dev) providers
+  hold shared state (the meal list, favorites, filters) so any screen can read
+  it without passing callbacks down the widget tree
 - **Google Fonts:** Lato typography via the `google_fonts` package
 - **Material 3 dark theme** generated from a seed color
 - Meal planning and management (planned)
@@ -56,10 +60,76 @@ of the stack with the Navigator.
 - Material 3 via [`material_ui`](https://pub.dev/packages/material_ui) (Flutter 3.47
   moved Material out of the framework, so import
   `package:material_ui/material_ui.dart`, not `package:flutter/material.dart`)
+- [`flutter_riverpod`](https://pub.dev/packages/flutter_riverpod) 3 for
+  app-wide state management
 - [`google_fonts`](https://pub.dev/packages/google_fonts) 9 for typography
 - [`cupertino_icons`](https://pub.dev/packages/cupertino_icons) 2
 - [`transparent_image`](https://pub.dev/packages/transparent_image) for fade-in meal photos
 - GitHub Actions for CI, Dependabot for dependency updates
+
+## State management
+
+The app uses [Riverpod](https://riverpod.dev) as its app-wide state solution.
+`main.dart` wraps the app in a `ProviderScope`, and providers live in
+`lib/providers/`:
+
+| Provider | Type | Holds |
+| --- | --- | --- |
+| `mealsProvider` | `Provider<List<Meal>>` | The read-only list of all meals |
+| `favoritesProvider` | `StateNotifierProvider<FavoritesNotifier, List<Meal>>` | The favorite meals and the logic to toggle them |
+| `filtersProvider` | `StateNotifierProvider<FiltersNotifier, Map<Filter, bool>>` | Which dietary filters are switched on (gluten-free, lactose-free, vegetarian, vegan) |
+
+### Where each provider is used
+
+| Screen / widget | Provider | How |
+| --- | --- | --- |
+| `TabsScreen` | `mealsProvider`, `filtersProvider` | Watches both to work out which meals pass the active filters |
+| `FiltersScreen` | `filtersProvider` | Watches the map for the switch values; calls `setFilter` when a switch is toggled |
+| `MealDetail` | `favoritesProvider` | Calls `toggleMealFavoriteStatus` from the star button and shows a snackbar from the result |
+
+Because the state lives in providers and not in widgets, a change made on one
+screen (for example switching on a filter) is reflected on every other screen
+that watches it, with no callbacks passed down the widget tree.
+
+### Usage
+
+Read state and rebuild when it changes (inside `build`):
+
+```dart
+final filters = ref.watch(filtersProvider);
+SwitchListTile(value: filters[Filter.vegan] ?? false, ...);
+```
+
+Change state through the notifier (inside callbacks, never in `build`):
+
+```dart
+ref.read(filtersProvider.notifier).setFilter(Filter.vegan, isChecked);
+```
+
+A notifier owns the logic for changing its state:
+
+```dart
+class FiltersNotifier extends StateNotifier<Map<Filter, bool>> {
+  FiltersNotifier() : super({/* all filters start off */});
+
+  void setFilter(Filter filter, bool isActive) {
+    state = {...state, filter: isActive}; // new map, so watchers rebuild
+  }
+}
+```
+
+Conventions:
+
+- Read state in widgets with `ref.watch(provider)`; call actions with
+  `ref.read(provider.notifier).method()`.
+- Never mutate `state` in place. Assign a new object (`state = [...state, meal]`)
+  so listeners rebuild.
+- Screens that use providers extend `ConsumerWidget` / `ConsumerStatefulWidget`.
+- Riverpod 3 moved `StateNotifier` to `package:flutter_riverpod/legacy.dart`.
+  New code should prefer `Notifier`.
+
+Local UI state that no other screen needs, such as the selected bottom-tab
+index, stays in a plain `setState`.
 
 ## Getting started
 
@@ -95,6 +165,7 @@ lib/
 ├── core/theme/    # app theme
 ├── data/          # dummy categories and meals
 ├── models/        # Category, Meal
+├── providers/     # Riverpod providers (meals, favorites)
 ├── screens/       # tabs (bottom navigation), categories, meals
 └── widgets/       # drawer, category tile, meal item, meal detail, image fallback
 ```
@@ -109,7 +180,9 @@ lib/
 - [x] Meal list and detail screens
 - [x] Favorites (in memory)
 - [ ] Weekly planner
-- [ ] Choose state management and persistence
+- [x] Choose state management (Riverpod)
+- [x] Move favorites and filters onto Riverpod providers
+- [ ] Persistence
 - [ ] Widget tests for each screen
 - [ ] Automated Android build and release in CI
 
