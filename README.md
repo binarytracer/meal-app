@@ -9,8 +9,8 @@ stacks, tab bars and a side drawer.
 
 > **Status:** early development. The scaffold, dark Material 3 theme with Lato
 > typography, tooling and CI are in place. Categories, meal list, meal detail,
-> favorites, the bottom navigation bar and the side drawer are built; the
-> drawer links and the other screens below are not wired up yet.
+> favorites, the bottom navigation bar, the side drawer and the Filters screen
+> are built and wired together; the other screens below are not built yet.
 
 ## Screenshots
 
@@ -29,7 +29,8 @@ Filters screen.*
 - **Screen stacks:** push and pop screens with the Navigator
 - **Bottom navigation bar:** switch between Categories and Favorites
 - **Side drawer:** "Cooking Up!" drawer with Categories and Filters entries
-  (navigation from the drawer is not wired up yet)
+- **Filters:** gluten-free, lactose-free, vegan and vegetarian switches that
+  narrow the meals shown in the Categories tab
 - **Favorites:** star a meal on its detail screen to add or remove it; the
   Favorites tab updates immediately
 - **Image fallback:** a placeholder icon is shown if a meal photo fails to load
@@ -171,6 +172,32 @@ Raise that number as tests are added so coverage can only go up.
 The analyzer runs in strict mode (`strict-casts`, `strict-inference`,
 `strict-raw-types`) with extra lint rules; see `analysis_options.yaml`.
 
+## CI/CD
+
+The pipeline lives in `.github/workflows/ci.yml` and is verify-only for now.
+
+**In place**
+
+| Area | What it does |
+| --- | --- |
+| Verify (`Analyze & test`) | On every push to `main` and every pull request: pinned Flutter version, `pub get --enforce-lockfile`, format check, a guard against legacy `package:flutter/material.dart` imports, strict analysis (`--fatal-infos`) and tests in random order |
+| Coverage | Line coverage is printed in the run summary and the build fails below the `MIN_COVERAGE` threshold (currently 35%); `lcov.info` is uploaded as an artifact |
+| Dependency review | On pull requests, flags new or vulnerable dependencies (dependency graph is enabled for the repo) |
+| Dependabot | Weekly updates for `pub`, GitHub Actions and Gradle |
+| Repo security | Dependabot alerts and security updates, secret scanning and push protection are enabled |
+
+**Not done yet (deliberately)**
+
+- Building the app in CI (a debug APK job after verify) and a tag-triggered
+  signed release (`.aab`/`.apk` plus a GitHub Release). Release builds currently
+  fall back to the debug signing key, so they are fine for installing on your own
+  phone but not for a store release.
+- Before any store release: create a real keystore, add the signing secrets and
+  change the `com.example.meal_app` application id.
+- Branch protection on `main` requiring the checks to pass, so CI is advisory
+  for now.
+- Integration tests (they need an emulator job).
+
 ## Project structure
 
 Current layout under `lib/` (a feature-first split is planned as the app grows):
@@ -194,7 +221,7 @@ test/
 - [x] Screen stack navigation
 - [x] Bottom navigation bar (Categories / Favorites)
 - [x] Side drawer UI
-- [ ] Wire up drawer navigation and the Filters screen
+- [x] Wire up drawer navigation and the Filters screen
 - [x] Add `google_fonts` and apply a custom text theme
 - [x] Meal list and detail screens
 - [x] Favorites (in memory)
@@ -204,7 +231,11 @@ test/
 - [ ] Persistence
 - [x] Unit tests for the providers and test coverage report in CI
 - [ ] Widget tests for each screen
+- [x] CI verify, coverage report, dependency review and Dependabot
 - [ ] Automated Android build and release in CI
+- [ ] Real signing key and application id
+- [ ] Branch protection on `main`
+- [ ] Integration tests
 
 ## Development tooling
 
