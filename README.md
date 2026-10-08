@@ -15,15 +15,14 @@ stacks, tab bars and a side drawer.
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/categories.png" alt="Categories screen with a two-column grid of colored gradient category tiles" width="240">
   <img src="docs/screenshots/tabs.png" alt="Categories tab with a side drawer button and a bottom bar to switch between Categories and Favorites" width="240">
   <img src="docs/screenshots/drawer.png" alt="Side drawer with Categories and Filters entries" width="240">
   <img src="docs/screenshots/filters.png" alt="Your Filters screen with switches for gluten-free, lactose-free, vegan and vegetarian meals" width="240">
 </p>
 
-*Left to right: the Categories grid on the dark Material 3 theme, the same
-screen inside the tab bar (Categories / Favorites) with the drawer button, the
-side drawer, and the Filters screen.*
+*Left to right: the Categories grid inside the tab bar (Categories / Favorites)
+with the drawer button on the dark Material 3 theme, the side drawer, and the
+Filters screen.*
 
 ## Features
 
